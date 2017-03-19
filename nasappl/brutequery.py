@@ -9,7 +9,15 @@ def save_data(fname, results):
     with open(fname, 'w') as f:
         f.write("name * email * phone\n")
         for (name, email, phone) in sorted(results):
-            f.write("{n} * {e} * {p}\n".format(n=name, e=email, p=phone))
+            try:
+                f.write("{n} * {e} * {p}\n".format(n=name, e=email, p=phone))
+            except:
+                try:
+                    print '-Convert name[{n}] email[{e}] phone[{p}] to utf-8'.format(n=name.encode('utf-8'), e=email.encode('utf-8'), p=phone.encode('utf-8'))
+                    f.write("{n} * {e} * {p}\n".format(n=name.encode('utf-8'), e=email.encode('utf-8'), p=phone.encode('utf-8')))
+                except:
+                    print '-Convert name[{n}] email[{e}] phone[{p}] to ascii/replace'.format(n=name.encode('ascii', 'replace'), e=email.encode('ascii', 'replace'), p=phone.encode('ascii', 'replace'))
+                    f.write("{n} * {e} * {p}\n".format(n=name.encode('ascii', 'replace'), e=email.encode('ascii', 'replace'), p=phone.encode('ascii', 'replace')))
 
 def parse_row(row_soup):
     td = row_soup.find_all("td")
@@ -79,7 +87,6 @@ print "search2 count: {}".format(len(search2))
 search = []
 search.extend(search1)
 search.extend(search2)
-
 
 # TODO, make the search1 a list of ['a', 'b', ... 'aa', 'ab', ... 'aaa', ]
 #  up to 4 letters and make that my total list (this search will take ~5 days
